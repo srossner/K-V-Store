@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>Put_Tab.qml</file>
+        <file>Get_Tab.qml</file>
+        <file>Delete_Tab.qml</file>
+    </qresource>
+</RCC>

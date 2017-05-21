@@ -30,27 +30,31 @@ pplx::task<http_response> make_task_request(http_client & client,
 
 void make_request(http_client & client, method mtd, json::value const & jvalue)
 {
-    make_task_request(client, mtd, jvalue)
-        .then([](http_response response)
-    {
-        if (response.status_code() == status_codes::OK)
+    make_task_request(client, mtd, jvalue).then
+    (
+        [](http_response response)
+
         {
-            return response.extract_json();
+            if (response.status_code() == status_codes::OK)
+            {
+                return response.extract_json();
+            }
+            return pplx::task_from_result(json::value());
         }
-        return pplx::task_from_result(json::value());
-    })
-        .then([](pplx::task<json::value> previousTask)
-    {
-        try
+
+    ).then(
+        [](pplx::task<json::value> previousTask)
         {
-            display_field_map_json(previousTask.get());
+            try
+            {
+                display_field_map_json(previousTask.get());
+            }
+            catch (http_exception const & e)
+            {
+                cout << e.what() << endl;
+            }
         }
-        catch (http_exception const & e)
-        {
-            cout << e.what() << endl;
-        }
-    })
-        .wait();
+    ).wait();
 }
 
 int main()

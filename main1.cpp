@@ -1,6 +1,5 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QtQuick/QQuickItem>
 
 #include <cpprest/http_listener.h>
 #include <cpprest/json.h>
@@ -162,27 +161,6 @@ void handle_del(http_request request)
 }
 
 
-class Message : public QObject
-{
-    Q_OBJECT
-    Q_PROPERTY(QString author READ author WRITE setAuthor NOTIFY authorChanged)
-public:
-    void setAuthor(const QString &a) {
-        if (a != m_author) {
-            m_author = a;
-            emit authorChanged();
-        }
-    }
-    QString author() const {
-        return m_author;
-    }
-signals:
-    void authorChanged();
-private:
-    QString m_author;
-};
-
-
 
 int main(int argc, char *argv[])
 {
@@ -190,13 +168,6 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
-
-
-    qDebug() << "Hallo\n";
-
-    app.exec();
-
-    qDebug() << "Hallo\n";
 
     http_listener listener("http://localhost/restdemo");
 
@@ -212,14 +183,14 @@ int main(int argc, char *argv[])
             .then([&listener]() {TRACE("\nstarting to listen\n"); })
             .wait();
 
-        while (true);//!myClass.off);
+        while (true);
     }
     catch (exception const & e)
     {
         cout << e.what() << endl;
     }
 
-    return 1;
+    return app.exec();
 }
 
 

@@ -9,6 +9,31 @@ static http_listener listener("http://*:9000/restdemo");
 
 static std::map<utility::string_t, utility::string_t> dictionary;
 
+void handle_request(http_request request, function<void(const json::value &, field_map &)> action)
+{
+    field_map answer;
+
+    request.extract_json().then
+    (
+        [&answer, &action](pplx::task<json::value> task)
+        {
+            try{
+                const auto & jvalue = task.get();
+
+                if (!jvalue.is_null())
+                {
+                    action(jvalue, answer);
+                }
+            }catch (http_exception const & e)
+            {
+                cout << e.what() << endl;
+            }
+        }
+    ).wait();
+
+    request.reply(status_codes::OK, json::value::object(answer));
+}
+
 RestServer& RestServer::getInstance()
 {
     static RestServer server;
@@ -53,62 +78,45 @@ std::map<utility::string_t, utility::string_t> RestServer::getDictionary()
     return dictionary;
 }
 
-
-
-
-
-
-
 void RestServer::handle_get(http_request request)
 {
     TRACE("\nhandle GET\n");
 
-    field_map answer;
-
-    for (auto const & p : dictionary)
-    {
-        answer.push_back(make_pair(p.first, json::value(p.second)));
-    }
-
-    request.reply(status_codes::OK, json::value::object(answer));
-}
-
-
-
-
-void handle_request(http_request request, function<void(const json::value &, field_map &)> action)
-{
-    field_map answer;
-
-    request.extract_json().then
-    (
-        [&answer, &action](pplx::task<json::value> task)
+    handle_request(
+        request,
+        [](const json::value & jvalue, field_map & answer)
         {
-            try{
-                const auto & jvalue = task.get();
 
-                if (!jvalue.is_null())
-                {
-                    action(jvalue, answer);
-                }
-            }catch (http_exception const & e)
+            set<utility::string_t> keys;
+            for (auto const & e : jvalue.as_array())
             {
-                cout << e.what() << endl;
+                if (e.is_string())
+                {
+                    auto key = e.as_string();
+
+                    auto pos = dictionary.find(key);
+                    if (pos == dictionary.end())
+                    {
+                        answer.push_back(make_pair(key, json::value("<NotFound>")));
+                    }
+                    else
+                    {
+                        TRACE_ACTION("found", pos->first, pos->second);
+                        answer.push_back(make_pair(key, json::value(pos->second )));
+                        keys.insert(key);
+                    }
+                }
             }
         }
-    ).wait();
-
-    request.reply(status_codes::OK, json::value::object(answer));
+    );
 }
-
 
 
 void RestServer::handle_post(http_request request)
 {
     TRACE("\nhandle POST\n");
 
-    handle_request(
-        request,
+    handle_request( request,
         [](const json::value & jvalue, field_map & answer)
         {
             for (auto const & e : jvalue.as_array())
@@ -132,14 +140,12 @@ void RestServer::handle_post(http_request request)
     );
 }
 
-
-
 void RestServer::handle_put(http_request request)
 {
     TRACE("\nhandle PUT\n");
 
-    handle_request(
-        request,
+    handle_request( request,
+
         [](const json::value & jvalue, field_map & answer)
         {
             for (auto const & e : jvalue.as_object())
@@ -167,8 +173,6 @@ void RestServer::handle_put(http_request request)
     );
 }
 
-
-
 void RestServer::handle_del(http_request request)
 {
     TRACE("\nhandle DEL\n");
@@ -182,6 +186,7 @@ void RestServer::handle_del(http_request request)
             {
                 if (e.is_string())
                 {
+
                     auto key = e.as_string();
 
                     auto pos = dictionary.find(key);
@@ -197,7 +202,6 @@ void RestServer::handle_del(http_request request)
                     }
                 }
             }
-
             for (auto const & key : keys)
                 dictionary.erase(key);
         }
