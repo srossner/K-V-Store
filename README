@@ -1,1 +1,1 @@
-sudo apt-get install qt-sdk qt5-default qtquick1-5-dev qtdeclarative5-dev libcpprest-dev
+sudo apt-get install qt-sdk qt5-default qtquick1-5-dev qtdeclarative5-dev libcpprest-dev g++ git make zlib1g-dev libboost-all-dev libssl-dev cmake

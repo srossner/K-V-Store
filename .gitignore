@@ -1,7 +1,7 @@
 # This file is used to ignore files which are generated
 # ----------------------------------------------------------------------------
 
-build-K-V-Store-Desktop-Debug/
+build-*-Desktop-Debug
 
 *~
 *.autosave

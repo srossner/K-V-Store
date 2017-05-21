@@ -125,8 +125,8 @@ void handle_del(http_request request)
 {
     TRACE("\nhandle DEL\n");
 
-    handle_request(
-        request,
+    handle_request(request,
+
         [](const json::value & jvalue, field_map & answer)
     {
         set<utility::string_t> keys;
@@ -167,13 +167,18 @@ int main()
 
     try
     {
-        listener
-            .open()
-            .then([&listener]() {TRACE("\nstarting to listen\n"); })
-            .wait();
+        listener.open().then
+        (
+            [&listener]()
+            {
+                cout << "\n"
+                     << "starting to listen\n";
+            }
+        ).wait();
 
         while (true);
     }
+
     catch (exception const & e)
     {
         cout << e.what() << endl;
@@ -181,3 +186,12 @@ int main()
 
     return 0;
 }
+
+
+
+
+
+
+
+
+
