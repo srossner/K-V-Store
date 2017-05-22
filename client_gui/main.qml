@@ -8,15 +8,6 @@ Window {
     height: 800
     width: 800
 
-    /*MouseArea {
-        anchors.fill: parent
-        onClicked: {
-            rest_client.put("hallo", "hallo")
-           // Qt.quit();
-        }
-    }*/
-
-
     Text {
         id: heading
         height: 20
@@ -30,9 +21,6 @@ Window {
         anchors.left: parent.left
         anchors.leftMargin: 0
     }
-
-
-
 
     Button{
         id: button_close
@@ -106,6 +94,25 @@ Window {
             anchors.topMargin: 16
             Delete_Tab{
                 id:delete_tab
+                anchors.right: parent.right
+                anchors.rightMargin: 1
+                anchors.left: parent.left
+                anchors.leftMargin: 0
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 1
+                anchors.top: parent.top
+                anchors.topMargin: 0
+                anchors.fill: parent
+            }
+        }
+        Tab {
+            title: "Test"
+            anchors.rightMargin: 16
+            anchors.leftMargin: 16
+            anchors.bottomMargin: 16
+            anchors.topMargin: 16
+            Test_Tab{
+                id:test_tab
                 anchors.right: parent.right
                 anchors.rightMargin: 1
                 anchors.left: parent.left

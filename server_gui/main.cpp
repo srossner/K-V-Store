@@ -1,22 +1,25 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include "restserver.h"
-
+#include <QQmlContext>
+#include "controller.h"
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
+    QQmlContext* context = engine.rootContext();
+
+    Controller myController;
+    context->setContextProperty("controller", &myController);
+
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+    myController.start();
 
-    RestServer myServer = RestServer::getInstance();
-
-    myServer.start();
 
     int return_t = app.exec();
 
-    myServer.stop();
+    myController.stop();
 
     return  return_t;
 

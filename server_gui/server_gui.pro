@@ -4,7 +4,12 @@ QT += qml quick
 CONFIG += c++14
 
 SOURCES += main.cpp \
-    restserver.cpp
+    restserver.cpp \
+    controller.cpp \
+    dictionary.cpp \
+    all_dictionary.cpp \
+    fifo_dictionary.cpp \
+    lru_dictionary.cpp
 
 RESOURCES += qml.qrc
 
@@ -16,7 +21,13 @@ QML2_IMPORT_PATH = /usr/lib/x86_64-linux-gnu/qt5/qml
 include(deployment.pri)
 
 HEADERS += \
-    restserver.h
+    restserver.h \
+    controller.h \
+    memorystrategy.h \
+    dictionary.h \
+    all_dictionary.h \
+    fifo_dictionary.h \
+    lru_dictionary.h
 
 
 unix|win32: LIBS += -lcpprest -lboost_system -lcrypto -lssl -lpthread

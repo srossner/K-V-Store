@@ -1,5 +1,5 @@
 import QtQuick 2.4
-import QtQuick.Controls 1.2
+import QtQuick.Controls 1.4
 
 
 Item {
@@ -57,7 +57,7 @@ Item {
         font.pixelSize: 24
     }
 
-    Text {
+    TextArea {
         id: text_response_delete
         text: qsTr("Respons: ")
         verticalAlignment: Text.AlignTop

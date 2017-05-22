@@ -14,13 +14,6 @@ using namespace web::http::client;
 #include <iostream>
 
 
-
-
-
-
-
-
-
 class RestClient : public QObject
 {
     Q_OBJECT

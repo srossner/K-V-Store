@@ -9,6 +9,24 @@ static http_listener listener("http://*:9000/restdemo");
 
 static std::map<utility::string_t, utility::string_t> dictionary;
 
+
+
+
+
+
+void RestServer::setMemoryStrategy( MemoryStrategy_t memoryStrategy )
+{
+    m_MemoryStrategy = memoryStrategy;
+    cout << std::endl<< "Memory Strategy: " << m_MemoryStrategy << std::endl;
+
+
+}
+
+
+
+
+
+
 void handle_request(http_request request, function<void(const json::value &, field_map &)> action)
 {
     field_map answer;
@@ -33,13 +51,6 @@ void handle_request(http_request request, function<void(const json::value &, fie
 
     request.reply(status_codes::OK, json::value::object(answer));
 }
-
-RestServer& RestServer::getInstance()
-{
-    static RestServer server;
-    return server;
-}
-
 
 RestServer::RestServer()
 {
@@ -74,11 +85,6 @@ void RestServer::stop()
     listener.close();
 }
 
-std::map<utility::string_t, utility::string_t> RestServer::getDictionary()
-{
-    return dictionary;
-}
-
 void RestServer::handle_get(http_request request)
 {
     TRACE("\nhandle GET\n");
@@ -93,7 +99,6 @@ void RestServer::handle_get(http_request request)
             {
                 if (e.is_string())
                 {
-                    TRACE("found String");
                     auto key = e.as_string();
 
                     auto pos = dictionary.find(key);
@@ -108,10 +113,8 @@ void RestServer::handle_get(http_request request)
                         keys.insert(key);
                     }
                 }else{
-                    TRACE("no String ");
                     if (e.is_number() )
                     {
-                        TRACE("found number");
                         int key = e.as_integer ();
                         if ( key == 1 )
                         {
