@@ -4,6 +4,7 @@ using namespace std;
 
 static http_client httpclient("http://*:9000");
 
+bool debug = false;
 
 void display_field_map_json( const json::value & jvalue, QString* response )
 {
@@ -13,7 +14,7 @@ void display_field_map_json( const json::value & jvalue, QString* response )
         for (auto const & e : jvalue.as_object())
         {
             res = res + e.first + " : " + e.second.as_string() + "\n";
-            cout << res;
+            if(debug)cout << res;
         }
 
         *response = QString::fromStdString(res);

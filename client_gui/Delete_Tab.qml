@@ -37,13 +37,13 @@ Item {
         anchors.rightMargin: 0
         onClicked: {
             rest_client.del(textField_key.text)
-            text_response_delete.text = qsTr("Respons: ") + rest_client.getDEL();
+            text_response_delete.text = qsTr("Response: ") + rest_client.getDEL();
         }
     }
 
     Text {
         id: text_response_delete_title
-        text: qsTr("Respons DELETE")
+        text: qsTr("Response DELETE")
         verticalAlignment: Text.AlignTop
         horizontalAlignment: Text.AlignHCenter
         anchors.right: parent.right
@@ -59,7 +59,7 @@ Item {
 
     TextArea {
         id: text_response_delete
-        text: qsTr("Respons: ")
+        text: qsTr("Response: ")
         verticalAlignment: Text.AlignTop
         horizontalAlignment: Text.AlignHCenter
         anchors.right: parent.right

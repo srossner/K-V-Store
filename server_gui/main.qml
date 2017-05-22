@@ -7,8 +7,7 @@ Window {
     id: the_window
     visible: true
     height: 160
-    width: 400
-
+    width: 450
 
     Text {
         id: heading
@@ -50,6 +49,9 @@ Window {
                 case radioButton_LRU:
                      controller.setMemoryStrategy(2/*LRU*/);
                     break;
+                case radioButton_SWAP:
+                     controller.setMemoryStrategy(3/*SWAP*/);
+                    break;
                 }
             }
         }
@@ -76,6 +78,13 @@ Window {
             exclusiveGroup: group
         }
 
+        RadioButton {
+            id: radioButton_SWAP
+            text: qsTr("SWAP")
+            anchors.verticalCenter: parent.verticalCenter
+            exclusiveGroup: group
+        }
+
         Text {
 
             id: text1
@@ -84,7 +93,6 @@ Window {
             font.pixelSize: 12
             visible: group.current != radioButton_all
         }
-
     }
 
     Slider {
@@ -117,6 +125,4 @@ Window {
             Qt.quit();
         }
     }
-
 }
-

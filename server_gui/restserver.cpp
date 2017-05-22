@@ -3,9 +3,11 @@
 #include "all_dictionary.h"
 #include "fifo_dictionary.h"
 #include "lru_dictionary.h"
+#include "swap_dictionary.h"
 
-#define TRACE(msg)            cout << msg
-#define TRACE_ACTION(a, k, v) cout << a << " (" << k << ", " << v << ")\n"
+bool debug = false;
+#define TRACE(msg)            if(debug) cout << msg
+#define TRACE_ACTION(a, k, v) if(debug) cout << a << " (" << k << ", " << v << ")\n"
 
 using namespace web;
 using namespace web::http;
@@ -14,6 +16,7 @@ using namespace std;
 
 static http_listener listener("http://*:9000/restdemo");
 static shared_ptr<Dictionary> dictionary;
+
 
 
 void RestServer::setMemoryStrategy( MemoryStrategy_t memoryStrategy )
@@ -31,6 +34,9 @@ void RestServer::setMemoryStrategy( MemoryStrategy_t memoryStrategy )
         break;
     case LRU:
         dictionary = std::shared_ptr<Dictionary>(new LRU_Dictionary);
+        break;
+    case SWAP:
+        dictionary = std::shared_ptr<Dictionary>(new Swap_Dictionary);
         break;
     }
 
@@ -71,13 +77,11 @@ void handle_request(http_request request, function<void(const json::value &, fie
 
 RestServer::RestServer()
 {
-
     running = false;
     listener.support(methods::GET,    RestServer::handle_get);
     listener.support(methods::POST,   RestServer::handle_post);
     listener.support(methods::PUT,    RestServer::handle_put);
     listener.support(methods::DEL,    RestServer::handle_del);
-
 }
 
 void RestServer::start()
@@ -119,7 +123,7 @@ void RestServer::handle_get(http_request request)
                 {
                     auto key = e.as_string();
 
-                    if (!dictionary->find(key))
+                    if ( key == "" || !dictionary->find(key)  )
                     {
                         answer.push_back(make_pair(key, json::value("<NotFound>")));
                     }
@@ -158,7 +162,7 @@ void RestServer::handle_post(http_request request)
                 {
                     auto key = e.as_string();
 
-                    if (!dictionary->find(key))
+                    if (key == "" || !dictionary->find(key))
                     {
                         answer.push_back(make_pair(key, json::value("<nil>")));
                     }
@@ -186,18 +190,24 @@ void RestServer::handle_put(http_request request)
                 {
                     auto key = e.first;
                     auto value = e.second.as_string();
+                    if(key == "")
+                    {
+                        TRACE_ACTION("EMPTY", key, value);
+                        answer.push_back(make_pair(key, json::value("<EMPTY>")));
 
-                    if (!dictionary->find(key))
-                    {
-                        TRACE_ACTION("added", key, value);
-                        answer.push_back(make_pair(key, json::value("<put>")));
-                        dictionary->insert(key, value);
-                    }
-                    else
-                    {
-                        TRACE_ACTION("updated", key, value);
-                        answer.push_back(make_pair(key, json::value("<updated>")));
-                        dictionary->update(key, value);
+                    }else{
+                        if (!dictionary->find(key))
+                        {
+                            TRACE_ACTION("added", key, value);
+                            answer.push_back(make_pair(key, json::value("<put>")));
+                            dictionary->insert(key, value);
+                        }
+                        else
+                        {
+                            TRACE_ACTION("updated", key, value);
+                            answer.push_back(make_pair(key, json::value("<updated>")));
+                            dictionary->update(key, value);
+                        }
                     }
                 }
             }
@@ -220,7 +230,7 @@ void RestServer::handle_del(http_request request)
                 {
                     auto key = e.as_string();
 
-                    if (!dictionary->find(key))
+                    if (key == "" || !dictionary->find(key))
                     {
                         answer.push_back(make_pair(key, json::value("<failed>")));
                     }

@@ -50,13 +50,13 @@ Item {
         anchors.rightMargin: 0
         onClicked: {
             rest_client.put(textField_key.text, textField_value.text)
-            text_response_put.text =  qsTr("Respons: ") + rest_client.getPUT();
+            text_response_put.text =  qsTr("Response: ") + rest_client.getPUT();
         }
     }
 
     Text {
         id: text_response_put_title
-        text: qsTr("Respons PUT")
+        text: qsTr("Response PUT")
         verticalAlignment: Text.AlignTop
         horizontalAlignment: Text.AlignHCenter
         anchors.right: parent.right
@@ -72,7 +72,7 @@ Item {
 
     TextArea {
         id: text_response_put
-        text: qsTr("Respons: ")
+        text: qsTr("Response: ")
         verticalAlignment: Text.AlignTop
         horizontalAlignment: Text.AlignHCenter
         anchors.right: parent.right

@@ -57,13 +57,13 @@ Item {
         anchors.rightMargin: 0
         onClicked: {
             rest_client.get(textField_key.text, checkBox_all.checked )
-            text_response_get.text =  qsTr("Respons: ") + rest_client.getGET();
+            text_response_get.text =  qsTr("Response: ") + rest_client.getGET();
         }
     }
 
     Text {
         id: text_response_get_title
-        text: qsTr("Respons GET")
+        text: qsTr("Response GET")
         verticalAlignment: Text.AlignTop
         horizontalAlignment: Text.AlignHCenter
         anchors.right: parent.right
@@ -79,7 +79,7 @@ Item {
 
     TextArea {
         id: text_response_get
-        text: qsTr("Respons: ")
+        text: qsTr("Response: ")
         verticalAlignment: Text.AlignTop
         horizontalAlignment: Text.AlignHCenter
         anchors.right: parent.right

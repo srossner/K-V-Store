@@ -9,7 +9,8 @@ SOURCES += main.cpp \
     dictionary.cpp \
     all_dictionary.cpp \
     fifo_dictionary.cpp \
-    lru_dictionary.cpp
+    lru_dictionary.cpp \
+    swap_dictionary.cpp
 
 RESOURCES += qml.qrc
 
@@ -27,7 +28,8 @@ HEADERS += \
     dictionary.h \
     all_dictionary.h \
     fifo_dictionary.h \
-    lru_dictionary.h
+    lru_dictionary.h \
+    swap_dictionary.h
 
 
 unix|win32: LIBS += -lcpprest -lboost_system -lcrypto -lssl -lpthread

@@ -56,13 +56,13 @@ Item {
 
             rest_client.get( "", true);
 
-            text_response_test.text =  qsTr("Respons: ") + rest_client.getGET();;
+            text_response_test.text =  qsTr("Response: ") + rest_client.getGET();;
         }
     }
 
     Text {
         id: text_response_test_title
-        text: qsTr("Respons test")
+        text: qsTr("Response test")
         verticalAlignment: Text.AlignTop
         horizontalAlignment: Text.AlignHCenter
         anchors.right: parent.right
@@ -78,7 +78,7 @@ Item {
 
     TextArea {
         id: text_response_test
-        text: qsTr("Respons: ")
+        text: qsTr("Response: ")
         verticalAlignment: Text.AlignTop
         horizontalAlignment: Text.AlignHCenter
         anchors.right: parent.right

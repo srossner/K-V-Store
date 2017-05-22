@@ -16,13 +16,11 @@ int main(int argc, char *argv[])
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     myController.start();
 
-
     int return_t = app.exec();
 
     myController.stop();
 
     return  return_t;
-
 
 }
 
