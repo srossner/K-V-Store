@@ -9,7 +9,7 @@ void display_field_map_json( const json::value & jvalue, QString* response )
 {
     if (!jvalue.is_null())
     {
-        string res = "";
+        string res = "\n";
         for (auto const & e : jvalue.as_object())
         {
             res = res + e.first + " : " + e.second.as_string() + "\n";
@@ -80,10 +80,15 @@ void RestClient::del( QString key )
     make_request(httpclient, methods::DEL, delValue, &del_response);
 }
 
-void RestClient::get( QString key )
+void RestClient::get( QString key , bool all)
 {
     auto getValue = json::value::array();
-    getValue[0] = json::value(key.toUtf8().constData());
+
+    if(!all)
+        getValue[0] = json::value(key.toUtf8().constData());
+    else
+        getValue[0] = json::value(1);
+
 
     make_request(httpclient, methods::GET, getValue, &get_response);
 }

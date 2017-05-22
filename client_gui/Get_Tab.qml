@@ -26,6 +26,26 @@ Item {
         placeholderText: qsTr("Key")
     }
 
+    CheckBox {
+        id: checkBox_all
+        text: qsTr("get All")
+        anchors.right: button_submit_get.left
+        anchors.rightMargin: 142
+        anchors.left: textField_key.right
+        anchors.leftMargin: 20
+        anchors.bottom: text_response_get_title.top
+        anchors.bottomMargin: 22
+        anchors.top: parent.top
+        anchors.topMargin: 22
+        onCheckedChanged: {
+            if(checked)
+                textField_key.enabled = false
+            else
+                textField_key.enabled = true
+
+        }
+    }
+
     Button {
         id: button_submit_get
         text: qsTr("Submit")
@@ -36,7 +56,7 @@ Item {
         anchors.right: parent.right
         anchors.rightMargin: 0
         onClicked: {
-            rest_client.get(textField_key.text)
+            rest_client.get(textField_key.text, checkBox_all.checked )
             text_response_get.text =  qsTr("Respons: ") + rest_client.getGET();
         }
     }
@@ -59,7 +79,7 @@ Item {
 
     Text {
         id: text_response_get
-        text: qsTr("Respons")
+        text: qsTr("Respons: ")
         verticalAlignment: Text.AlignTop
         horizontalAlignment: Text.AlignHCenter
         anchors.right: parent.right

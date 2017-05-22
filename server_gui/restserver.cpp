@@ -40,6 +40,7 @@ RestServer& RestServer::getInstance()
     return server;
 }
 
+
 RestServer::RestServer()
 {
 
@@ -92,6 +93,7 @@ void RestServer::handle_get(http_request request)
             {
                 if (e.is_string())
                 {
+                    TRACE("found String");
                     auto key = e.as_string();
 
                     auto pos = dictionary.find(key);
@@ -104,6 +106,21 @@ void RestServer::handle_get(http_request request)
                         TRACE_ACTION("found", pos->first, pos->second);
                         answer.push_back(make_pair(key, json::value(pos->second )));
                         keys.insert(key);
+                    }
+                }else{
+                    TRACE("no String ");
+                    if (e.is_number() )
+                    {
+                        TRACE("found number");
+                        int key = e.as_integer ();
+                        if ( key == 1 )
+                        {
+                            for (auto const & p : dictionary)
+                            {
+                                TRACE_ACTION("found",p.first, p.second);
+                                answer.push_back(make_pair(p.first, json::value(p.second)));
+                            }
+                        }
                     }
                 }
             }

@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     QQmlContext* context = engine.rootContext();
+
     RestClient myClient;
     context->setContextProperty("rest_client", &myClient);
 

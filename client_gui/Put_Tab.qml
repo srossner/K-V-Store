@@ -72,7 +72,7 @@ Item {
 
     Text {
         id: text_response_put
-        text: qsTr("Respons")
+        text: qsTr("Respons: ")
         verticalAlignment: Text.AlignTop
         horizontalAlignment: Text.AlignHCenter
         anchors.right: parent.right

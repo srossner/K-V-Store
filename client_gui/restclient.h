@@ -13,6 +13,14 @@ using namespace web::http::client;
 
 #include <iostream>
 
+
+
+
+
+
+
+
+
 class RestClient : public QObject
 {
     Q_OBJECT
@@ -26,7 +34,7 @@ signals:
 
 public slots:
 
-    void get( QString key );
+    void get( QString key, bool all );
     void put( QString key,QString value );
     void del( QString key );
 
