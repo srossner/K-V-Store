@@ -22,7 +22,7 @@ Item {
         anchors.topMargin: 8
         anchors.left: parent.left
         anchors.leftMargin: 8
-        placeholderText: qsTr("Start Number")
+        placeholderText: qsTr("Start")
     }
 
     TextField {
@@ -35,7 +35,7 @@ Item {
         anchors.rightMargin: 8
         anchors.left: textField_number_start.right
         anchors.leftMargin: 8
-        placeholderText: qsTr("End Number")
+        placeholderText: qsTr("End")
     }
 
     Button {

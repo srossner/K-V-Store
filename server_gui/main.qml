@@ -6,8 +6,8 @@ import QtQuick.Controls 1.4
 Window {
     id: the_window
     visible: true
-    height: 120
-    width: 300
+    height: 160
+    width: 400
 
 
     Text {
@@ -30,7 +30,7 @@ Window {
         anchors.rightMargin: 8
         anchors.left: parent.left
         anchors.leftMargin: 8
-        anchors.bottom: close.top
+        anchors.bottom: sliderHorizontal_numberofElements.top
         anchors.bottomMargin: 8
         anchors.top: heading.bottom
         anchors.topMargin: 8
@@ -75,13 +75,38 @@ Window {
             anchors.verticalCenter: parent.verticalCenter
             exclusiveGroup: group
         }
+
+        Text {
+
+            id: text1
+            text: qsTr("Number of Elements: " + sliderHorizontal_numberofElements.value)
+            anchors.verticalCenter: parent.verticalCenter
+            font.pixelSize: 12
+            visible: group.current != radioButton_all
+        }
+
+    }
+
+    Slider {
+        id: sliderHorizontal_numberofElements
+        anchors.bottom: close.top
+        anchors.bottomMargin: 8
+        anchors.right: parent.right
+        anchors.rightMargin: 8
+        anchors.left: parent.left
+        anchors.leftMargin: 8
+        minimumValue: 10
+        maximumValue: 1000
+        stepSize: 1.0
+        enabled: group.current != radioButton_all
+        onValueChanged: controller.setMAX_SIZE(value)
     }
 
     Button{
         id:close
         text: "Close"
-        anchors.top: heading.bottom
-        anchors.topMargin: 50
+        anchors.top: parent.bottom
+        anchors.topMargin: -50
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 8
         anchors.right: parent.right

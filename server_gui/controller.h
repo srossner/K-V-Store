@@ -26,6 +26,10 @@ public slots:
 
     void setMemoryStrategy( int memoryStrategy ){ m_Server.setMemoryStrategy((MemoryStrategy_t) memoryStrategy); }
 
+    void setMAX_SIZE( int MAX_SIZE ){ m_Server.setMAX_SIZE(MAX_SIZE);}
+
+private:
+
 };
 
 #endif // CONTROLLER_H

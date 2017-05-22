@@ -1,17 +1,19 @@
 #include "restserver.h"
+#include "dictionary.h"
+#include "all_dictionary.h"
+#include "fifo_dictionary.h"
+#include "lru_dictionary.h"
 
 #define TRACE(msg)            cout << msg
 #define TRACE_ACTION(a, k, v) cout << a << " (" << k << ", " << v << ")\n"
 
+using namespace web;
+using namespace web::http;
+using namespace web::http::experimental::listener;
 using namespace std;
 
 static http_listener listener("http://*:9000/restdemo");
-
-static std::map<utility::string_t, utility::string_t> dictionary;
-
-
-
-
+static shared_ptr<Dictionary> dictionary;
 
 
 void RestServer::setMemoryStrategy( MemoryStrategy_t memoryStrategy )
@@ -19,13 +21,28 @@ void RestServer::setMemoryStrategy( MemoryStrategy_t memoryStrategy )
     m_MemoryStrategy = memoryStrategy;
     cout << std::endl<< "Memory Strategy: " << m_MemoryStrategy << std::endl;
 
+    switch(memoryStrategy)
+    {
+    case ALL:
+        dictionary = std::shared_ptr<Dictionary>(new All_Dictionary);
+        break;
+    case FIFO:
+        dictionary = std::shared_ptr<Dictionary>(new FIFO_Dictionary);
+        break;
+    case LRU:
+        dictionary = std::shared_ptr<Dictionary>(new LRU_Dictionary);
+        break;
+    }
 
+    dictionary->setMAX_SIZE(MAX_SIZE);
 }
 
-
-
-
-
+void RestServer::setMAX_SIZE( int MAX_SIZE )
+{
+    this->MAX_SIZE = MAX_SIZE;
+    if(running)
+        dictionary->setMAX_SIZE(MAX_SIZE);
+}
 
 void handle_request(http_request request, function<void(const json::value &, field_map &)> action)
 {
@@ -55,6 +72,7 @@ void handle_request(http_request request, function<void(const json::value &, fie
 RestServer::RestServer()
 {
 
+    running = false;
     listener.support(methods::GET,    RestServer::handle_get);
     listener.support(methods::POST,   RestServer::handle_post);
     listener.support(methods::PUT,    RestServer::handle_put);
@@ -78,11 +96,13 @@ void RestServer::start()
 
         cout << e.what() << endl;
     }
+    running = true;
 }
 
 void RestServer::stop()
 {
     listener.close();
+    running = false;
 }
 
 void RestServer::handle_get(http_request request)
@@ -93,24 +113,20 @@ void RestServer::handle_get(http_request request)
         request,
         [](const json::value & jvalue, field_map & answer)
         {
-
-            set<utility::string_t> keys;
             for (auto const & e : jvalue.as_array())
             {
                 if (e.is_string())
                 {
                     auto key = e.as_string();
 
-                    auto pos = dictionary.find(key);
-                    if (pos == dictionary.end())
+                    if (!dictionary->find(key))
                     {
                         answer.push_back(make_pair(key, json::value("<NotFound>")));
                     }
                     else
                     {
-                        TRACE_ACTION("found", pos->first, pos->second);
-                        answer.push_back(make_pair(key, json::value(pos->second )));
-                        keys.insert(key);
+                        TRACE_ACTION("found", key, dictionary->get(key));
+                        answer.push_back(make_pair(key, json::value(dictionary->get(key))));
                     }
                 }else{
                     if (e.is_number() )
@@ -118,11 +134,8 @@ void RestServer::handle_get(http_request request)
                         int key = e.as_integer ();
                         if ( key == 1 )
                         {
-                            for (auto const & p : dictionary)
-                            {
-                                TRACE_ACTION("found",p.first, p.second);
-                                answer.push_back(make_pair(p.first, json::value(p.second)));
-                            }
+
+                            answer = dictionary->getAll();
                         }
                     }
                 }
@@ -145,14 +158,13 @@ void RestServer::handle_post(http_request request)
                 {
                     auto key = e.as_string();
 
-                    auto pos = dictionary.find(key);
-                    if (pos == dictionary.end())
+                    if (!dictionary->find(key))
                     {
                         answer.push_back(make_pair(key, json::value("<nil>")));
                     }
                     else
                     {
-                        answer.push_back(make_pair(pos->first, json::value(pos->second)));
+                        answer.push_back(make_pair(key , json::value( dictionary->get(key) )));
                     }
                 }
             }
@@ -175,18 +187,18 @@ void RestServer::handle_put(http_request request)
                     auto key = e.first;
                     auto value = e.second.as_string();
 
-                    if (dictionary.find(key) == dictionary.end())
+                    if (!dictionary->find(key))
                     {
                         TRACE_ACTION("added", key, value);
                         answer.push_back(make_pair(key, json::value("<put>")));
+                        dictionary->insert(key, value);
                     }
                     else
                     {
                         TRACE_ACTION("updated", key, value);
                         answer.push_back(make_pair(key, json::value("<updated>")));
+                        dictionary->update(key, value);
                     }
-
-                    dictionary[key] = value;
                 }
             }
         }
@@ -206,24 +218,22 @@ void RestServer::handle_del(http_request request)
             {
                 if (e.is_string())
                 {
-
                     auto key = e.as_string();
 
-                    auto pos = dictionary.find(key);
-                    if (pos == dictionary.end())
+                    if (!dictionary->find(key))
                     {
                         answer.push_back(make_pair(key, json::value("<failed>")));
                     }
                     else
                     {
-                        TRACE_ACTION("deleted", pos->first, pos->second);
+                        TRACE_ACTION("deleted", key, dictionary->get(key));
                         answer.push_back(make_pair(key, json::value("<deleted>")));
                         keys.insert(key);
                     }
                 }
             }
             for (auto const & key : keys)
-                dictionary.erase(key);
+                dictionary->erase(key);
         }
     );
 }
