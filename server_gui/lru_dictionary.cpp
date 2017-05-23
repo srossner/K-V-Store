@@ -38,6 +38,7 @@ void LRU_Dictionary::update(std::string key, std::string value)
 void LRU_Dictionary::erase(std::string key)
 {
     m_dictionary.erase(key);
+    m_List.remove(key);
 }
 
 std::string LRU_Dictionary::get(std::string key)

@@ -62,6 +62,7 @@ void Swap_Dictionary::update(std::string key, std::string value)
 void Swap_Dictionary::erase(std::string key)
 {
     m_dictionary.erase(key);
+    m_List.remove(key);
 }
 
 std::string Swap_Dictionary::get(std::string key)

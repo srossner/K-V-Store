@@ -4,7 +4,7 @@
 #include "dictionary.h"
 
 #include <map>
-#include <queue>
+#include <list>
 #include <set>
 #include <string>
 #include <iostream>
