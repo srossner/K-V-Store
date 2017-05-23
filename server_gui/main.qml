@@ -6,8 +6,8 @@ import QtQuick.Controls 1.4
 Window {
     id: the_window
     visible: true
-    height: 160
-    width: 450
+    height: 250
+    width: 750
 
     Text {
         id: heading
@@ -90,7 +90,7 @@ Window {
             id: text1
             text: qsTr("Number of Elements: " + sliderHorizontal_numberofElements.value)
             anchors.verticalCenter: parent.verticalCenter
-            font.pixelSize: 12
+            font.pixelSize: 24
             visible: group.current != radioButton_all
         }
     }

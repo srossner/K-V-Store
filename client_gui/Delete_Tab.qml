@@ -70,7 +70,7 @@ Item {
         anchors.bottomMargin: 0
         anchors.top: text_response_delete_title.bottom
         anchors.topMargin: 8
-        font.pixelSize: 12
+        font.pixelSize: 24
     }
 }
 
